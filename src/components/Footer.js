@@ -39,7 +39,6 @@ export default function Footer() {
         </div>
         <div className="col-lg-6 col-md-6 d-none d-md-block">
           <div className="payment-method-img text-right">
-            <img src="/assets/img/images/card_img.png" alt="img" />
           </div>
         </div>
       </div>
