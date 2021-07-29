@@ -1,5 +1,8 @@
 import BigNumber from "bignumber.js";
 import React, { useState } from "react";
+import { LoadingOverlay, Loader } from 'react-overlay-loader';
+ 
+import 'react-overlay-loader/styles.css';
 
 const ERC20_DECIMALS = 18;
 
@@ -16,6 +19,7 @@ export default function Body(props) {
       {/* main-area */}
       <main>
         {/* slider-area */}
+        <Loader fullPage loading = {props.loading} />
         <section className="slider-area home-four-slider">
           <div className="slider-active">
             <div className="single-slider slider-bg slider-style-two">
@@ -171,9 +175,10 @@ export default function Body(props) {
           </div>
           <div className="container">
             <div className="justify-content-center align-content-center">
-              <div className="col-lg-6 col-md-8 ">
+              <div className="col-lg-12 col-md-12 ">
                 <div>
                   <div className="contact-form">
+                    
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();

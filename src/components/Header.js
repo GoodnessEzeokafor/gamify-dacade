@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Header() {
+export default function Header({cUSDBalance}) {
     return (
         <>
 {/* header-area */}
@@ -18,7 +18,7 @@ export default function Header() {
           <div className="header-social">
             <span>CUSD balance : </span>
             <ul>
-              <li><h1>0</h1></li>
+              <li><h1>{cUSDBalance}</h1></li>
               {/* <li><a href="#"><i className="fab fa-twitter" /></a></li>
               <li><a href="#"><i className="fab fa-pinterest-p" /></a></li>
               <li><a href="#"><i className="fab fa-linkedin-in" /></a></li> */}

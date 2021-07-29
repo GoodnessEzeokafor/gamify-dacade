@@ -11,7 +11,7 @@ import Header from "./components/Header";
 import Body from "./components/Body";
 import Footer from "./components/Footer";
 const ContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1";
-const game_address = "0x6cBb42169A5bac225dF6e3D81e90712591FC6aA0";
+const game_address = "0x054101dA6770a9Bdf05C8F0f48AD7591Ea3A9982";
 
 // import ipfs
 
@@ -40,15 +40,17 @@ export default function App() {
 
   // upload game file to IPFS
   const uploadImage = async (file) => {
-    console.log({ file });
+
     try {
       const added = await client.add(file);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      console.log({ url });
+    
       return url;
+
     } catch (error) {
       console.log("Error uploading file: ", error);
       // return false
+      setloading(false)
       throw error;
     }
   };
@@ -57,6 +59,7 @@ export default function App() {
     if (window.celo) {
       // notification("⚠️ Please approve this DApp to use it.")
       try {
+        setloading(true)
         await window.celo.enable();
         // notificationOff()
         const web3 = new Web3(window.celo);
@@ -70,13 +73,15 @@ export default function App() {
         await setAddress(user_address);
 
         await setKit(kit);
+     
       } catch (error) {
         console.log({ error });
         // notification(`⚠️ ${error}.`)
+        setloading(false)
       }
     } else {
       console.log("please install the extension");
-      // notification("⚠️ Please install the CeloExtensionWallet.")
+      alert("⚠️ Please install the CeloExtensionWallet.")
     }
   };
 
@@ -89,6 +94,7 @@ export default function App() {
   }, [kit, address]);
 
   const getBalance = async () => {
+    setloading(true)
     const balance = await kit.getTotalBalance(address);
     const celoBalance = balance.CELO.shiftedBy(-ERC20_DECIMALS).toFixed(2);
     const USDBalance = balance.cUSD.shiftedBy(-ERC20_DECIMALS).toFixed(2);
@@ -97,9 +103,11 @@ export default function App() {
     setcontract(contract);
     setCeloBalance(celoBalance);
     setcUSDBalance(USDBalance);
+    setloading(false)
   };
 
   const getGames = async () => {
+    setloading(true)
     const _gameLength = await contract.methods.getGameLength().call();
     const _games = [];
 
@@ -124,7 +132,7 @@ export default function App() {
     const all_games = await Promise.all(_games);
 
     setGames(all_games);
-    console.log({ all_games });
+    setloading(false)
   };
 
   useEffect(() => {
@@ -133,6 +141,7 @@ export default function App() {
 
   const purchaseGame = async (_price, _index, ipfs_hash) => {
     try {
+      setloading(true)
       const cUSDContract = new kit.web3.eth.Contract(erc20Abi, ContractAddress);
 
       const game_price = _price;
@@ -143,22 +152,26 @@ export default function App() {
         .send({ from: address });
 
       await contract.methods.buyGame(_index).send({ from: address });
-
+      alert ("Your download will begin shortly from IPFS...")
       window.location.href = ipfs_hash;
       // return result
       getBalance();
-      getGames();
+      getGames();   setloading(false)
     } catch (error) {
       console.log({ error });
+      setloading(false)
     }
   };
 
   // create a game
 
   const createGame = async (title, image, description, gamefile, price) => {
+    setloading(true)
     const ipfs_hash = await uploadImage(gamefile);
     if (!ipfs_hash) {
+      setloading(false)
       return alert("Failed to upload game file");
+      
     }
 
     const game_price = BigNumber(price).shiftedBy(ERC20_DECIMALS).toString();
@@ -168,17 +181,19 @@ export default function App() {
       .send({ from: address });
     // return result
     await getGames();
+    setloading(false)
   };
 
   return (
     <>
-      <Header />
+      <Header cUSDBalance = {cUSDBalance} />
       <Body
         createGame={createGame}
         fileUrl={fileUrl}
         games={games}
         cUSDBalance={cUSDBalance}
         purchaseGame={purchaseGame}
+        loading = {loading}
       />
       <Footer />
     </>

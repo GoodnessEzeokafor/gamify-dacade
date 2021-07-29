@@ -30,7 +30,14 @@ contract CeloGames {
     string ipfs_hash; //ipfs hash of game after being uploaded
     uint price;
     uint sales;
+    bool available;
   }
+  
+  modifier onlyGameOwner(uint256 _id) {
+        require(msg.sender == games[_id].owner,"Only owner of the game can call this function.");
+        _;
+    }
+
 
 // number of games
   uint internal gamesLength = 0;
@@ -64,7 +71,8 @@ address payable internal onwerAddress;
       _description,
       _ipfs_hash,
       _price,
-      _sales
+      _sales,
+      true
     );
     gamesLength++;
   }
@@ -78,7 +86,8 @@ address payable internal onwerAddress;
     string memory description, 
     string memory ipfs_hash, 
     uint price, 
-    uint sales
+    uint sales,
+    bool available
   ) {
     Game storage game = games[_index];
     return(
@@ -88,14 +97,17 @@ address payable internal onwerAddress;
       game.description,
       game.ipfs_hash,
       game.price,
-      game.sales
+      game.sales,
+      game.available
     );
   }
 
 
 // function to buy a game and send cusd to the owner
   function buyGame(uint _index) public payable  {
- 
+      
+    //   ensure the game hasnt been sold out
+    require(games[_index].available != false, "This game has been sold out");
     require(
       IERC20Token(cUsdTokenAddress).transferFrom(
         msg.sender,
@@ -110,5 +122,26 @@ address payable internal onwerAddress;
   function getGameLength() public view returns (uint) {
     return (gamesLength);
   }
+  
+  // new functionalities
+
+
+    //owner of the game can set a discount or reduce the price
+    function setPrice(uint _id, uint _newPrice) public onlyGameOwner(_id){
+            games[_id].price = _newPrice;
+
+    }
+    
+      //owner of the game can set a game to sold out
+    function endSales(uint _id) public onlyGameOwner(_id){
+            games[_id].available = false;
+
+    }
+
 
 }
+
+
+
+
+
