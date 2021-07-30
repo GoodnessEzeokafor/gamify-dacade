@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { newKitFromWeb3 } from "@celo/contractkit";
 import "@celo-tools/use-contractkit/lib/styles.css";
 import BigNumber from "bignumber.js";
-import charityABI from "./contracts/abi/gamesale.abi.json";
+import gamifyABI from "./contracts/abi/gamify.abi.json";
 import erc20Abi from "./contracts/abi/erc20.abi.json";
 import { create } from "ipfs-http-client";
 
@@ -10,8 +10,9 @@ import Web3 from "@celo/contractkit/node_modules/web3";
 import Header from "./components/Header";
 import Body from "./components/Body";
 import Footer from "./components/Footer";
+
 const ContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1";
-const game_address = "0x6cBb42169A5bac225dF6e3D81e90712591FC6aA0";
+const gamifyaddress = "0xda8a57d6abD1b3C0Ae1869dC3AbeB9BBa8267c4C";
 
 // import ipfs
 
@@ -67,9 +68,11 @@ export default function App() {
 
         kit.defaultAccount = user_address;
 
-        await setAddress(user_address);
+        const contract = kit.web3.eth.Contract(gamifyABI, gamifyaddress);
 
-        await setKit(kit);
+        setAddress(user_address);
+        setKit(kit);
+        setcontract(contract);
       } catch (error) {
         console.log({ error });
         // notification(`⚠️ ${error}.`)
@@ -93,14 +96,12 @@ export default function App() {
     const celoBalance = balance.CELO.shiftedBy(-ERC20_DECIMALS).toFixed(2);
     const USDBalance = balance.cUSD.shiftedBy(-ERC20_DECIMALS).toFixed(2);
 
-    const contract = new kit.web3.eth.Contract(charityABI, game_address);
-    setcontract(contract);
     setCeloBalance(celoBalance);
     setcUSDBalance(USDBalance);
   };
 
   const getGames = async () => {
-    const _gameLength = await contract.methods.getGameLength().call();
+    const _gameLength = await contract.methods.gamesLength().call();
     const _games = [];
 
     for (let i = 0; i < _gameLength; i++) {
@@ -139,7 +140,7 @@ export default function App() {
 
       console.log({ game_price });
       const result = await cUSDContract.methods
-        .approve(game_address, game_price)
+        .approve(gamifyaddress, game_price)
         .send({ from: address });
 
       await contract.methods.buyGame(_index).send({ from: address });
