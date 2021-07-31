@@ -1,13 +1,16 @@
 import BigNumber from "bignumber.js";
 import React, { useState } from "react";
+import { LoadingOverlay, Loader } from 'react-overlay-loader';
+ 
+import 'react-overlay-loader/styles.css';
 
 const ERC20_DECIMALS = 18;
 
 export default function Body(props) {
   const [title, settitle] = useState(null);
-  const [image, setimage] = useState(null);
   const [description, setdescription] = useState(null);
-  const [gamefile, setgamefile] = useState(null);
+  const [imageFile, setimageFile] = useState(null);
+  const [gameFile, setgameFile] = useState(null);
   const [price, setprice] = useState(0);
 
   // console.log(props.games)
@@ -16,6 +19,7 @@ export default function Body(props) {
       {/* main-area */}
       <main>
         {/* slider-area */}
+        <Loader fullPage loading = {props.loading} />
         <section className="slider-area home-four-slider">
           <div className="slider-active">
             <div className="single-slider slider-bg slider-style-two">
@@ -24,7 +28,7 @@ export default function Body(props) {
                   <div className="col-xl-6 col-lg-7 col-md-11">
                     <div className="slider-content">
                       <h6 data-animation="fadeInUp" data-delay=".4s">
-                        Celo Games
+                        Gamify
                       </h6>
                       <h2 data-animation="fadeInUp" data-delay=".4s">
                         Sell <span>Blockchain</span> Games
@@ -53,7 +57,7 @@ export default function Body(props) {
                   <div className="col-xl-6 col-lg-7 col-md-11">
                     <div className="slider-content">
                       <h6 data-animation="fadeInUp" data-delay=".4s">
-                        Celo Games
+                        Gamify
                       </h6>
                       <h2 data-animation="fadeInUp" data-delay=".4s">
                         Enjoy <span>Quality</span> Games
@@ -120,13 +124,12 @@ export default function Body(props) {
                           </h5>
                         </div>
                         {/* <div className="product-cart-action">
-            <a href="#"><i className="fas fa-shopping-basket" /></a>
-            
-          </div> */}
+                          <a href="#"><i className="fas fa-shopping-basket" /></a>
+                        </div> */}
                         <div className="newsletter-form">
                           <button
                             onClick={() => {
-                              props.purchaseGame(game.price, key, game.ipfs_hash);
+                              props.purchaseGame(game.price, key, game.game_file);
                             }}
                           >
                             Purchase <i class="fas fa-paper-plane"></i>
@@ -141,21 +144,20 @@ export default function Body(props) {
           </div>
         </section>
         {/* shop-area-end */}
-        {/* 
-  <div class="contact-form">
-                                <form action="#">
-                                    <textarea name="message" id="message" placeholder="Write Message..."></textarea>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <input type="text" placeholder="Your Name">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input type="email" placeholder="Your Mail">
-                                        </div>
-                                    </div>
-                                    <button>SUBMIT MESSAGE</button>
-                                </form>
-                            </div> */}
+        {/* <div class="contact-form">
+          <form action="#">
+            <textarea name="message" id="message" placeholder="Write Message..."></textarea>
+            <div class="row">
+              <div class="col-md-6">
+                <input type="text" placeholder="Your Name">
+              </div>
+              <div class="col-md-6">
+                <input type="email" placeholder="Your Mail">
+              </div>
+            </div>
+            <button>SUBMIT MESSAGE</button>
+          </form>
+        </div> */}
 
         <section className="featured-game-area new-released-game-area pt-115 pb-90">
           <div className="container">
@@ -171,40 +173,33 @@ export default function Body(props) {
           </div>
           <div className="container">
             <div className="justify-content-center align-content-center">
-              <div className="col-lg-6 col-md-8 ">
+              <div className="col-lg-12 col-md-12 ">
                 <div>
                   <div className="contact-form">
+                    
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
                         if (
                           !title ||
-                          !image ||
+                          !price ||
                           !description ||
-                          !gamefile ||
-                          !price
+                          !imageFile ||
+                          !gameFile
                         ) {
                           return alert("Please enter all fields");
                         } else {
                           props.createGame(
                             title,
-                            image,
+                            price,
                             description,
-                            gamefile,
-                            price
+                            imageFile,
+                            gameFile,
                           );
                         }
                         // props.addGane()
                       }}
                     >
-                      <textarea
-                        name="message"
-                        id="message"
-                        onChange={(e) => {
-                          setdescription(e.target.value);
-                        }}
-                        placeholder="Game description..."
-                      />
                       <div className="row">
                         <div className="col-md-6">
                           <input
@@ -220,10 +215,20 @@ export default function Body(props) {
                           <input
                             type="number"
                             onChange={(e) => {
-                              console.log(e.target.value);
                               setprice(Number(e.target.value));
                             }}
                             placeholder="Game's Price in cUSD"
+                          />
+                        </div>
+
+                        <div className="col-md-12">
+                          <textarea
+                            name="message"
+                            id="message"
+                            onChange={(e) => {
+                              setdescription(e.target.value);
+                            }}
+                            placeholder="Game description..."
                           />
                         </div>
 
@@ -231,23 +236,24 @@ export default function Body(props) {
                           <input
                             type="file"
                             onChange={(e) => {
-                              setgamefile(e.target.files[0]);
+                              setimageFile(e.target.files[0]);
+                            }}
+                            placeholder="Select game cover photo"
+                          />
+                          <span className="text-small">Select game cover photo</span>
+                        </div>
+                        <div className="col-md-6">
+                          <input
+                            type="file"
+                            onChange={(e) => {
+                              setgameFile(e.target.files[0]);
                             }}
                             placeholder="Select zipped game file"
                           />
-                        </div>
-
-                        <div className="col-md-6">
-                          <input
-                            onChange={(e) => {
-                              setimage(e.target.value);
-                            }}
-                            type="text"
-                            placeholder="Game cover photo url"
-                          />
+                          <span className="text-small">Select zipped game file</span>
                         </div>
                       </div>
-                      <button type="submit">Click To Create</button>
+                      <button type="submit" className="mt-5">Click To Create</button>
                     </form>
                   </div>
                 </div>

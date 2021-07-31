@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Header() {
+export default function Header(props) {
     return (
         <>
 {/* header-area */}
@@ -16,9 +16,10 @@ export default function Header() {
         </div>
         <div className="col-lg-6">
           <div className="header-social">
-            <span>CUSD balance : </span>
+            <span className="mr-4">Balance : </span>
             <ul>
-              <li><h1>0</h1></li>
+              <li className="text-center"><h3>{props.cUSDBalance}</h3> cUSD</li>
+              <li className="text-center ml-3"><h3>{props.celoBalance}</h3> CELO</li>
               {/* <li><a href="#"><i className="fab fa-twitter" /></a></li>
               <li><a href="#"><i className="fab fa-pinterest-p" /></a></li>
               <li><a href="#"><i className="fab fa-linkedin-in" /></a></li> */}
@@ -36,7 +37,7 @@ export default function Header() {
             <nav>
               <div className="logo">
                 {/* <a href="index-4.html"><img src="/assets/img/logo/logo_two.png" alt="Logo" /></a> */}
-                <h1>Celo Games</h1>
+                <h1>Gamify</h1>
               </div>
               <div id="mobile-menu" className="navbar-wrap d-none d-lg-flex">
                 <ul>

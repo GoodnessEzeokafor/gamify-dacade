@@ -24,11 +24,12 @@ contract Gamify {
   struct Game {
     address payable owner;
     string name;
-    string image;
     string description;
-    string ipfs_hash; //ipfs hash of game after being uploaded
+    string image_link; // ipfs link of game image after being uploaded
+    string file_link; //ipfs link of game file after being uploaded
     uint price;
     uint game_sales;
+    bool status;
   }
 
   // Sale struct
@@ -58,34 +59,42 @@ contract Gamify {
   // Mapping of Sale to a unique index identifier
   mapping (uint => Sale) internal sales;
 
+  // Modifier to restrict some access to Contract Admin
+  modifier onlyContractAdmin {
+    require(msg.sender == adminAddress, "Only Contract Admin can call this function");
+    _;
+  }
+  // Modifier to restrict some access to Game owner
+  modifier onlyGameOwner(uint256 _id) {
+    require(msg.sender == games[_id].owner, "Only owner of the game can call this function.");
+    _;
+  }
+
   constructor() {
     // Declaring the admin address
     adminAddress = msg.sender;
   }
 
-  // Modifyer to restrict some access to the Contract Admin Only
-  modifier restricted {
-    require(msg.sender == adminAddress, "Only the Contract Admin can access this function");
-    _;
-  }
-
   // Adding a Game to the contract
   function addGame(
     string memory _name,
-    string memory _image,
-    string memory _description, 
-    string memory _ipfs_hash,
+    string memory _description,
+    string memory _image_link,
+    string memory _file_link,
     uint _price
   ) public {
     uint _game_sales = 0;
+    bool _status = true;
+    
     games[gamesLength] = Game(
       payable(msg.sender),
       _name,
-      _image,
       _description,
-      _ipfs_hash,
+      _image_link,
+      _file_link,
       _price,
-      _game_sales
+      _game_sales,
+      _status
     );
     gamesLength++;
   }
@@ -109,26 +118,28 @@ contract Gamify {
   function getGame(uint _index) public view returns (
     address owner,
     string memory name, 
-    string memory image, 
-    string memory description, 
-    string memory ipfs_hash, 
+    string memory description,
+    string memory image_link, 
+    string memory file_link, 
     uint price, 
-    uint game_sales
+    uint game_sales,
+    bool status
   ) {
     Game storage game = games[_index];
     return(
       game.owner,
       game.name,
-      game.image,
       game.description,
-      game.ipfs_hash,
+      game.image_link,
+      game.file_link,
       game.price,
-      game.game_sales
+      game.game_sales,
+      game.status
     );
   }
 
   // Geting a single Sale
-  function getSale(uint _index) restricted public view returns (
+  function getSale(uint _index) onlyContractAdmin public view returns (
     uint game_id,
     address buyer,
     address seller,
@@ -147,7 +158,7 @@ contract Gamify {
 
   // Paying for a Game
   function gamePayment(Game storage _game) internal returns (bool) {
-    (bool _isValid, ) = IERC20Token(cUsdTokenAddress).transferFrom(
+    bool _isValid = IERC20Token(cUsdTokenAddress).transferFrom(
       msg.sender,
       _game.owner,
       _game.price
@@ -159,10 +170,25 @@ contract Gamify {
   // Buying a Game then send CUSD to the owner and record Sale
   function buyGame(uint _index) public payable  {
     Game storage game = games[_index];
- 
+
+    //   ensure the game hasn't been sold out
+    require(game.status != false, "This game has been sold out");
     require(gamePayment(game), "Game purchase failed.");
     game.game_sales++;
 
     addSale(_index, game);
+  }
+
+  // Owner of the game can set a discount or reduce the price
+  function updateGamePrice(
+    uint _id,
+    uint _newPrice
+  ) onlyGameOwner(_id) public {
+    games[_id].price = _newPrice;
+  }
+  
+  // Owner of the game can set a game to sold out
+  function updateGameStatus(uint _id) onlyGameOwner(_id) public{
+    games[_id].status = false;
   }
 }

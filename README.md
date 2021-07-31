@@ -1,6 +1,7 @@
 # Gamify
 
-[Preview Gamify](https://emmanueljet.github.io/gamify)
+[Preview Gamify](https://gamify-dacade.herokuapp.com)
+[Preview emmauelJet dacade Review](https://emmanueljet.github.io/gamify)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) while utilizing [Celo Blockchain](http://celo.org) technology for the [dacade Celo Development 101 course](https://dacade.org/communities/celo-development-101/submissions/7463cb3f-d328-4708-800a-dc9fef03f453).
 
@@ -21,7 +22,7 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm build`
+### `npm run build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
