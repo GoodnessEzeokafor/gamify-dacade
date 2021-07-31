@@ -1,6 +1,7 @@
 # Gamify
 
 [Preview Gamify](https://gamify-dacade.herokuapp.com)
+
 [Preview emmauelJet dacade Review](https://emmanueljet.github.io/gamify)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) while utilizing [Celo Blockchain](http://celo.org) technology for the [dacade Celo Development 101 course](https://dacade.org/communities/celo-development-101/submissions/7463cb3f-d328-4708-800a-dc9fef03f453).
@@ -68,6 +69,6 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/a
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm build` fails to minify
+### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
