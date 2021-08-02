@@ -14,7 +14,7 @@ export default function Footer() {
           <div className="footer-widget mb-50">
             <div className="footer-logo mb-35">
               {/* <a href="/"><img src="/assets/img/logo/logo.png" alt="" /></a> */}
-              <h1>Celo Games</h1>
+              <h1>Gamify</h1>
             </div>
             <div className="footer-text">
               <p>The gaming marketplace for you.</p>
@@ -31,15 +31,9 @@ export default function Footer() {
   </div>
   <div className="copyright-wrap s-copyright-wrap">
     <div className="container">
-      <div className="row">
-        <div className="col-lg-6 col-md-6">
-          <div className="copyright-text">
-            <p>Copyright © 2021 <a href="#">Celo Games</a> All Rights Reserved.</p>
-          </div>
-        </div>
-        <div className="col-lg-6 col-md-6 d-none d-md-block">
-          <div className="payment-method-img text-right">
-          </div>
+      <div className="text-center">
+        <div className="copyright-text">
+          <p>Copyright © 2021 <a href="#">Gamify</a> All Rights Reserved.</p>
         </div>
       </div>
     </div>
